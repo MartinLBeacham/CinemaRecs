@@ -9,7 +9,7 @@ const getGenres = async () => {
   console.log(urlToFetch);
   try {
     const response = await fetch(urlToFetch, {
-      method: "GET",
+      method: "GET", // "POST" does not work
       cache: "no-cache",
     });
     if (response.ok) {
@@ -32,15 +32,14 @@ const getMovies = async () => {
   urlToFetch = tmdbBaseUrl + discoverMovieEndpoint + requestParams;
   try {
     const response = await fetch(urlToFetch, {
-      method: "GET",
+      method: "GET", // "POST" does not work
       cache: "no-cache",
-      headers:{'Content-Type':'application/json'}
-    }
-    );
-    if(response.ok){
+      headers: { "Content-Type": "application/json" },
+    });
+    if (response.ok) {
       const jsonResponse = await response.json();
       const movies = jsonResponse.results;
-      console.log("movies:",movies);
+      console.log("movies:", movies);
       return movies;
     }
   } catch (error) {
@@ -52,20 +51,22 @@ const getMovieInfo = async (movie) => {
   const movieId = movie.id;
   const movieEndpoint = `movie/${movie.id}?language=en-US`;
   const requestParams = `&api_key=${api_key}`;
-  const urlToFetch = tmdbBaseUrl+movieEndpoint+requestParams;
+  const urlToFetch = tmdbBaseUrl + movieEndpoint + requestParams;
   console.log(urlToFetch);
-  try{
+  try {
     const response = await fetch(urlToFetch, {
-      method: "GET",
+      method: "GET", // "POST" does not work
       cache: "no-cache",
-       headers:{'Content-Type':'application/json'},
+      headers: { "Content-Type": "application/json" },
     });
-    if(response.ok){
+    if (response.ok) {
       const movieInfo = await response.json();
-      console.log("movie info:",movieInfo);
+      console.log("movie info:", movieInfo);
       return movieInfo;
     }
-  }catch(error){console.log(error)}
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 // Gets a list of movies and ultimately displays the info of a random movie from the list
@@ -75,12 +76,14 @@ const showRandomMovie = async () => {
     clearCurrentMovie();
   }
   const movies = await getMovies();
-  console.log("movies:",typeof movies);
+  console.log("movies:", typeof movies);
   const randomMovie = getRandomMovie(movies);
-  console.log("randomMovie:",randomMovie);
+  console.log("randomMovie:", randomMovie);
   const info = await getMovieInfo(randomMovie);
   displayMovie(info);
 };
 
+// dropdown menu to select genre
 getGenres().then(populateGenreDropdown);
+// button to  start the above chain of functions
 playBtn.onclick = showRandomMovie;
